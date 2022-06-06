@@ -7,5 +7,5 @@ export default {};
 </script>
 
 <style lang="scss">
-@import "@/assets/styles.scss";
+@import "@/assets/style.scss";
 </style>
