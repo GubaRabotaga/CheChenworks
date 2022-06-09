@@ -15,7 +15,6 @@ export default {
 
 <style lang="scss">
 @import "@/assets/style.scss";
-
 #app {
   font-family: "JetBrains Mono", monospace;
   -webkit-font-smoothing: antialiased;
