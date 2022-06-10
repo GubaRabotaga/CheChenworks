@@ -16,12 +16,20 @@
     scrollSpeed="25"
   >
     <template #item="{ element }">
-      <div class="card p-0">
+      <div
+        class="card p-0"
+        :style="{
+          borderColor: $store.state.difficultyColors[element.difficulty],
+        }"
+      >
         <div
           class="card-header handle d-flex justify-content-between align-items-center"
+          :style="{
+            backgroundColor: $store.state.difficultyColors[element.difficulty],
+          }"
         >
-          <h5 class="text-primary my-auto">
-            {{ element.title }} {{ element.id }}
+          <h5 class="text-dark my-auto">
+            {{ element.title }} ({{ element.difficulty }})
           </h5>
           <move-icon />
         </div>
@@ -34,26 +42,19 @@
 </template>
 
 <script>
-import useFreeTasks from "@/hooks/useFreeTasks";
-import MoveIcon from "./icons/MoveIcon.vue";
+import MoveIcon from "@/components/icons/MoveIcon.vue";
 
 export default {
-  name: "task-list",
-  setup() {
-    const { tasks } = useFreeTasks();
-    return {
-      tasks,
-    };
+  props: {
+    tasks: { type: Array, required: true },
   },
   methods: {
     onFreeTaskMove(event) {
       event.dragged.hidden = false;
       event.dragged.lastElementChild.hidden = true;
-      event.dragged.firstElementChild.style.backgroundColor = "var(--bs-info)";
     },
     onFreeTaskUnchoose(event) {
       event.item.lastElementChild.hidden = false;
-      event.item.firstElementChild.style.backgroundColor = "";
     },
     onTaskChoose(event) {
       event.item.style.transform = "rotate(5deg)";
@@ -68,9 +69,14 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/assets/style.scss";
-
 .handle {
-  background-color: $teal-100;
   cursor: move;
+}
+
+.flip-list-move {
+  transition: transform 0.5s;
+}
+.no-move {
+  transition: transform 0s;
 }
 </style>
