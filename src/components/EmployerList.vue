@@ -5,7 +5,19 @@
         <div class="col mb-3" v-for="employer in employers" :key="employer.id">
           <div class="card card-employer">
             <div class="card-header">
-              <h3>{{ employer.name }}</h3>
+              <h3 class="d-flex align-items-center">
+                {{ employer.name }}
+                <router-link
+                  class="btn btn-outline-success"
+                  style="margin-left: auto; float: right"
+                  to="/user"
+                >
+                  <open-link-icon />
+                </router-link>
+              </h3>
+              <h6 style="margin-top: 5px; align: bottom; float: left">
+                {{ employer.skills }}
+              </h6>
             </div>
             <div class="card-body">
               <base-draggable
@@ -15,25 +27,31 @@
                 group="tasks"
                 itemKey="id"
                 @choose="onTaskChoose"
+                filter=".btn-close"
               >
-                <template #item="{ element }">
+                <template #item="{ element, index }">
                   <div
                     class="list-group-item d-flex justify-content-between align-items-center"
-                    style="cursor: move"
+                    :style="{
+                      backgroundColor:
+                        $store.state.difficultyColors[element.difficulty],
+                    }"
                   >
-                    <h5 class="text-primary my-auto">
-                      {{ element.title }} {{ element.id }}
+                    <h5 class="task-title text-dark my-auto">
+                      {{ element.title }} ({{ element.difficulty }})
                     </h5>
+                    <button
+                      class="btn btn-close"
+                      @click="releaseTask(employer, index)"
+                    ></button>
                   </div>
                 </template>
               </base-draggable>
-              <h6 style="margin-top: 5px; align: bottom">
-                {{ employer.skills }}
-              </h6>
             </div>
-            <h6 class="badge">
-              {{ employer.takenTasks.length }}
-            </h6>
+            <div class="badge">
+              Total difficulty:
+              {{ getTotalDifficulty(employer.takenTasks) }}
+            </div>
           </div>
         </div>
       </div>
@@ -42,21 +60,30 @@
 </template>
 
 <script>
-import useEmployers from "@/hooks/useEmployers";
-
+import OpenLinkIcon from "./icons/OpenLinkIcon.vue";
 export default {
-  setup() {
-    const { employers } = useEmployers();
-
+  props: {
+    employers: { type: Array, required: true },
+  },
+  setup(_, context) {
+    let releaseTask = (employer, taskIndex) => {
+      let deletedTask = employer.takenTasks.splice(taskIndex, 1).at(0);
+      context.emit("release-task", deletedTask);
+    };
     return {
-      employers,
+      releaseTask,
     };
   },
   methods: {
+    getTotalDifficulty(takenTasks) {
+      return takenTasks.reduce((total, task) => total + task.difficulty, 0);
+    },
     onTaskChoose(event) {
       event.item.style.transform = "rotate(5deg)";
     },
   },
+  emits: ["release-task"],
+  components: { OpenLinkIcon },
 };
 </script>
 
@@ -78,6 +105,7 @@ export default {
   min-height: 42px;
   min-width: 200px;
   height: 100%;
+  background-color: $gray-200;
   border-style: dotted;
   border-width: 2px;
   border-radius: 2%;
@@ -94,7 +122,12 @@ export default {
 .badge {
   margin-left: auto;
   margin-right: 7px;
-  background-color: $secondary;
+  margin-bottom: 5px;
+  background-color: $info;
   float: right;
+}
+
+.task-title {
+  margin-right: 3px;
 }
 </style>

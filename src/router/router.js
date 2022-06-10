@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Main from "@/views/Main.vue";
 import AdminPanelView from "@/views/AdminPanelView.vue";
 import UserPanelView from "@/views/UserPanelView.vue";
+import AuthView from "../views/AuthView.vue";
 
 const routes = [
   {
@@ -15,6 +16,10 @@ const routes = [
   {
     path: "/user",
     component: UserPanelView,
+  },
+  {
+    path: "/auth",
+    component: AuthView,
   },
 ];
 

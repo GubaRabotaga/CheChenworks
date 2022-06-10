@@ -4,8 +4,15 @@ import "bootstrap";
 import Draggable from "vuedraggable";
 import App from "@/App.vue";
 import router from "@/router/router";
+import store from "@/store";
+import components from "@/components/UI";
 
 const app = createApp(App);
+
 app.component("base-draggable", Draggable);
 
-app.use(router).mount("#app");
+components.forEach((component) => {
+  app.component(component.name, component);
+});
+
+app.use(router).use(store).mount("#app");

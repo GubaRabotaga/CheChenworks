@@ -1,7 +1,7 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
     <div class="container">
-      <router-link class="navbar-brand m-0" to="/">Vue</router-link>
+      <router-link class="navbar-brand m-0" to="/">Project manager</router-link>
       <button
         id="navbar-toggler"
         class="navbar-toggler"
@@ -21,6 +21,9 @@
           </li>
           <li class="nav-item">
             <router-link class="nav-link" to="/user">User</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link" to="/auth">Authorization</router-link>
           </li>
         </ul>
       </div>
