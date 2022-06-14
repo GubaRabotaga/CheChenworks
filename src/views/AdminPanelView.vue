@@ -1,11 +1,11 @@
 <template>
   <div class="text-center">
-    <h3 class="mb-5">Employers</h3>
-    <employer-list :employers="employers" @release-task="onTaskRelease" />
+    <h3 class="mb-5">Employees</h3>
+    <employees-list :employees="employees" @release-task="onTaskRelease" />
 
     <div class="row my-5">
       <div class="col">
-        <button class="btn btn-danger">Delete</button>
+        <button class="btn btn-info" @click="save">Save</button>
       </div>
       <div class="col">
         <h3 class="text-center">Tasks</h3>
@@ -14,16 +14,16 @@
         <button
           class="btn btn-primary"
           data-bs-toggle="modal"
-          data-bs-target="#createPostModal"
+          data-bs-target="#createTaskModal"
         >
           Add
         </button>
       </div>
     </div>
 
-    <task-list :tasks="tasks" />
+    <task-list :tasks="freeTasks" />
 
-    <base-dialog id="createPostModal">
+    <base-dialog id="createTaskModal">
       <task-form @create="onTaskCreated" />
     </base-dialog>
   </div>
@@ -31,30 +31,54 @@
 
 <script>
 import TaskList from "@/components/TaskList.vue";
-import EmployerList from "@/components/EmployerList.vue";
+import EmployeesList from "@/components/EmployeesList.vue";
 import TaskForm from "@/components/TaskForm.vue";
-import useEmployers from "@/hooks/useEmployers";
+import useEmployees from "@/hooks/useEmployees";
 import useFreeTasks from "@/hooks/useFreeTasks";
 
 export default {
   setup() {
-    const { tasks } = useFreeTasks();
-    const { employers } = useEmployers();
+    const { freeTasks, createTask, putTask } = useFreeTasks();
+    const { employees, putEmployee } = useEmployees();
+
+    console.log(freeTasks, employees);
 
     return {
-      tasks,
-      employers,
+      freeTasks,
+      createTask,
+      employees,
+      putEmployee,
+      putTask,
     };
   },
   methods: {
     onTaskRelease(releasedTask) {
-      this.tasks.push(releasedTask);
+      releasedTask.isFree = true;
+      this.freeTasks.push(releasedTask);
     },
     onTaskCreated(newTask) {
-      this.tasks.push(newTask);
+      this.freeTasks.push(newTask);
+      this.createTask(newTask);
+    },
+    save() {
+      this.employees.forEach(async (employee) => {
+        employee.takenTasks.forEach((task) => {
+          task.isFree = false;
+        });
+        await this.putEmployee(employee.id, {
+          takenTasks: employee.takenTasks,
+        });
+      });
+
+      this.freeTasks.forEach(async (task) => {
+        task.isFree = true;
+        await this.putTask(task._id, task);
+      });
+
+      location.reload();
     },
   },
-  components: { TaskList, EmployerList, TaskForm },
+  components: { TaskList, EmployeesList, TaskForm },
 };
 </script>
 

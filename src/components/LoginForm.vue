@@ -18,18 +18,10 @@
         required
       />
     </div>
-    <!-- <div class="form-check">
-      <input
-        class="form-check-input"
-        type="checkbox"
-        id="gridCheck1"
-        v-model="isPasswordRemembering"
-      />
-      <label class="form-check-label" for="gridCheck1">
-        Remember password
-      </label>
-    </div> -->
     <button type="submit" class="btn btn-primary log-in-btn">Log in</button>
+    <button type="button" class="btn btn-dark log-in-btn" @click="logout">
+      Log out
+    </button>
   </form>
 </template>
 
@@ -39,12 +31,27 @@ export default {
     return {
       email: "",
       password: "",
-      //isPasswordRemembering: false,
     };
   },
   methods: {
-    submit() {
-      console.log(this.email, this.password);
+    async logout() {
+      await this.$store.dispatch("auth/onLogout");
+    },
+    async submit() {
+      await this.$store.dispatch("auth/onLogin", {
+        email: this.email,
+        password: this.password,
+      });
+
+      let link = this.$store.state.auth.credentials.user.roles.at(0);
+
+      if (!link) {
+        return;
+      }
+
+      link = link.trim().toLowerCase();
+
+      this.$router.push(link);
     },
   },
 };

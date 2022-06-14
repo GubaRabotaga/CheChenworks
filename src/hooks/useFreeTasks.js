@@ -1,31 +1,46 @@
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
+import { AuthAPIInstance } from "@/api";
 
 export default function () {
-  const tasks = ref([
-    {
-      title: "JS",
-      description:
-        "Et quas placeat ducimus. Mollitia laboriosam inventore blanditiis rerum eius eaque labore sequi. Id consequatur fugit molestiae sunt iste. Tempore qui omnis amet asperiores. Voluptates eos qui dolor qui est quis ut ut.…",
-      id: 1,
-      difficulty: 1,
-      creator:"Admin"  ,
-      standard:"5h",
-      progress: "0%",
-      Uphere: false
-    },
-    {
-      title: "JS",
-      description:
-        "Et quas placeat ducimus. Mollitia laboriosam inventore blanditiis rerum eius eaque labore sequi. Id consequatur fugit molestiae sunt iste. Tempore qui omnis amet asperiores. Voluptates eos qui dolor qui est quis ut ut.…",
-      id: 2,
-      difficulty: 10,
-      creator:"User",
-      standard:"10h",
-      progress: "0%",
-      Uphere: false
-    },
-  ]);
+  const freeTasks = ref([]);
+  const isLoading = ref(true);
+
+  const fetchTasks = async () => {
+    try {
+      let response = await AuthAPIInstance.get("/tasks");
+      let tasks = response.data.tasks;
+
+      freeTasks.value = tasks.filter((task) => task.isFree);
+
+      isLoading.value = false;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const createTask = async (body) => {
+    try {
+      await AuthAPIInstance.post("/tasks", body);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const putTask = async (id, body) => {
+    try {
+      await AuthAPIInstance.put(`/tasks/${id}`, body);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  onMounted(fetchTasks);
+
   return {
-    tasks,
+    freeTasks,
+    isLoading,
+    fetchTasks,
+    createTask,
+    putTask,
   };
 }

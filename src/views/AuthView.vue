@@ -35,10 +35,10 @@
 
     <div class="card-body">
       <div class="tab-pane fade show active" id="authorization">
-        <login-form id="login-form" />
+        <login-form />
       </div>
       <div class="tab-pane fade" id="registration">
-        <registration-form id="registration-form" />
+        <registration-form />
       </div>
     </div>
   </div>
