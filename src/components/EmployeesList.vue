@@ -2,11 +2,11 @@
   <div class="col">
     <span class="container horizontal-scrollable p-0">
       <div class="row">
-        <div class="col mb-3" v-for="employer in employers" :key="employer.id">
-          <div class="card card-employer">
+        <div class="col mb-3" v-for="employee in employees" :key="employee.id">
+          <div class="card card-employee">
             <div class="card-header">
               <h3 class="d-flex align-items-center">
-                {{ employer.name }}
+                {{ employee.name }} {{ employee.surname }}
                 <router-link
                   class="btn btn-outline-success"
                   style="margin-left: auto; float: right"
@@ -16,13 +16,13 @@
                 </router-link>
               </h3>
               <h6 style="margin-top: 5px; align: bottom; float: left">
-                {{ employer.skills }}
+                {{ employee.skills }}
               </h6>
             </div>
             <div class="card-body">
               <base-draggable
                 class="list-group"
-                :list="employer.takenTasks"
+                :list="employee.takenTasks"
                 animation="150"
                 group="tasks"
                 itemKey="id"
@@ -42,7 +42,7 @@
                     </h5>
                     <button
                       class="btn btn-close"
-                      @click="releaseTask(employer, index)"
+                      @click="releaseTask(employee, index)"
                     ></button>
                   </div>
                 </template>
@@ -50,7 +50,7 @@
             </div>
             <div class="badge">
               Total difficulty:
-              {{ getTotalDifficulty(employer.takenTasks) }}
+              {{ getTotalDifficulty(employee.takenTasks) }}
             </div>
           </div>
         </div>
@@ -61,22 +61,26 @@
 
 <script>
 import OpenLinkIcon from "./icons/OpenLinkIcon.vue";
+
 export default {
   props: {
-    employers: { type: Array, required: true },
+    employees: { type: Array, required: true },
   },
-  setup(_, context) {
-    let releaseTask = (employer, taskIndex) => {
-      let deletedTask = employer.takenTasks.splice(taskIndex, 1).at(0);
+  setup(props, context) {
+    let releaseTask = (employee, taskIndex) => {
+      let deletedTask = employee.takenTasks.splice(taskIndex, 1).at(0);
       context.emit("release-task", deletedTask);
     };
+
+    console.log(props.employees);
+
     return {
       releaseTask,
     };
   },
   methods: {
     getTotalDifficulty(takenTasks) {
-      return takenTasks.reduce((total, task) => total + task.difficulty, 0);
+      return takenTasks.reduce((total, task) => total + task?.difficulty, 0);
     },
     onTaskChoose(event) {
       event.item.style.transform = "rotate(5deg)";
@@ -111,8 +115,8 @@ export default {
   border-radius: 2%;
 }
 
-.card-employer {
-  border-color: $indigo;
+.card-employee {
+  border-color: $primary;
   border-width: 2px;
   margin-bottom: 2em;
   min-width: 15em;
