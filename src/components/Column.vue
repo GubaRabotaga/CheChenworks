@@ -41,12 +41,12 @@
                        
                        
                     }">
-                   <span v-show="!upHere">
+                   <span v-show="!element.Uphere">
                      <strong >Description:</strong>{{ element.description }}
                   </span>
                     
-                     <div v-show="upHere">
-                     <h5><strong>Director:</strong>{{ element.creator  }} </h5>
+                     <div v-show="element.Uphere">
+                     <h5><strong>Director:</strong>{{ element.Uphere  }} </h5>
                      <h5><strong>Executor:</strong>User</h5>
                      <h5><strong>Standard:</strong>{{ element.standard  }} </h5>
                      <h5><strong>Used up:</strong>{{ element.standard  }} </h5>
@@ -54,7 +54,7 @@
                      </div>
                      
                      
-                    <strong v-on:click="upHere = !upHere"  >
+                    <strong v-on:click="element.Uphere = !element.Uphere"  >
      <strong class="information" :style=" {
                         backgroundColor:
                         $store.state.difficultyColors[element.difficulty],
