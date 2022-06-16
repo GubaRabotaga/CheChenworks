@@ -11,9 +11,6 @@
     @choose="onTaskChoose"
     @start="onTaskStart"
     force-fallback="true"
-    forceAutoscrollFallback="true"
-    scrollSensitivity="50"
-    scrollSpeed="25"
   >
     <template #item="{ element }">
       <div
@@ -35,6 +32,15 @@
         </div>
         <div class="card-body">
           <p>{{ element.description }}</p>
+          <div v-for="attachment in element.attachments">
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              :href="baseFilesUrl + attachment"
+            >
+              FILE
+            </a>
+          </div>
         </div>
       </div>
     </template>
@@ -47,6 +53,11 @@ import MoveIcon from "@/components/icons/MoveIcon.vue";
 export default {
   props: {
     tasks: { type: Array, required: true },
+  },
+  data() {
+    return {
+      baseFilesUrl: `${import.meta.env.VITE_API_URL}/static/uploads/`,
+    };
   },
   methods: {
     onFreeTaskMove(event) {

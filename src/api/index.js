@@ -9,30 +9,41 @@ const defaultConfig = {
   withCredentials: true,
 };
 
-export const DefaultAPIInstance = axios.create(defaultConfig);
-export const AuthAPIInstance = axios.create(defaultConfig);
+const formConfig = {
+  baseURL: import.meta.env.VITE_API_URL + "/api",
+  headers: {
+    "Content-Type": "multipart/form-data",
+  },
+  withCredentials: true,
+};
 
-AuthAPIInstance.interceptors.request.use((config) => {
+const tokenInterceptor = (config) => {
   config.headers.Authorization = `Bearer ${store.state.auth.credentials.token}`;
   return config;
-});
+};
 
-AuthAPIInstance.interceptors.response.use(
-  (config) => config,
-  async (error) => {
-    const originalRequest = error.config;
+const errorInterceptor = async (error) => {
+  const originalRequest = error.config;
 
-    if (
-      error.response.status == 401 &&
-      error.config &&
-      !error.config._isRetry
-    ) {
-      originalRequest._isRetry = true;
-      await store.dispatch("auth/refreshToken");
+  if (error.response.status == 401 && error.config && !error.config._isRetry) {
+    originalRequest._isRetry = true;
+    await store.dispatch("auth/refreshToken");
 
-      return await AuthAPIInstance.request(originalRequest);
-    }
-
-    throw error;
+    return await AuthAPIInstance.request(originalRequest);
   }
+
+  throw error;
+};
+
+export const DefaultAPIInstance = axios.create(defaultConfig);
+export const AuthAPIInstance = axios.create(defaultConfig);
+export const FormAuthAPIInstance = axios.create(formConfig);
+
+AuthAPIInstance.interceptors.request.use(tokenInterceptor);
+AuthAPIInstance.interceptors.response.use((config) => config, errorInterceptor);
+
+FormAuthAPIInstance.interceptors.request.use(tokenInterceptor);
+FormAuthAPIInstance.interceptors.response.use(
+  (config) => config,
+  errorInterceptor
 );

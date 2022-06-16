@@ -19,9 +19,6 @@
       />
     </div>
     <button type="submit" class="btn btn-primary log-in-btn">Log in</button>
-    <button type="button" class="btn btn-dark log-in-btn" @click="logout">
-      Log out
-    </button>
   </form>
 </template>
 
@@ -34,9 +31,6 @@ export default {
     };
   },
   methods: {
-    async logout() {
-      await this.$store.dispatch("auth/onLogout");
-    },
     async submit() {
       await this.$store.dispatch("auth/onLogin", {
         email: this.email,

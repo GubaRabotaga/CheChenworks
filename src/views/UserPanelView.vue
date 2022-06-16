@@ -1,6 +1,6 @@
 <template>
   <div class="text-center">
-    <employer-list :employers="employers" @release-task="onTaskRelease" />
+    <column :columns="columns" @release-task="onTaskRelease" />
 
     <div class="row my-5">
       <div class="col">
@@ -20,7 +20,7 @@
       </div>
     </div>
 
-    <task-list :tasks="tasks" />
+    <task-list :tasks="employee.takenTasks" />
 
     <base-dialog id="createPostModal">
       <task-form @create="onTaskCreated" />
@@ -31,19 +31,19 @@
 <script>
 import Information from "@/components/information.vue";
 import TaskList from "@/components/TaskList.vue";
-import EmployerList from "@/components/Column.vue";
+import Column from "@/components/Column.vue";
 import TaskForm from "@/components/TaskForm.vue";
-import useEmployers from "@/hooks/useColumn";
-import useFreeTasks from "@/hooks/useFreeTasks";
+import useColumns from "@/hooks/useColumns";
+import useEmployee from "@/hooks/useEmployee";
 
 export default {
   setup() {
-    const { tasks } = useFreeTasks();
-    const { employers } = useEmployers();
+    const { employee } = useEmployee();
+    const { columns } = useColumns();
 
     return {
-      tasks,
-      employers,
+      employee,
+      columns,
     };
   },
   methods: {
@@ -54,7 +54,7 @@ export default {
       this.tasks.push(newTask);
     },
   },
-  components: { TaskList, EmployerList, TaskForm,Information },
+  components: { TaskList, Column, TaskForm, Information },
 };
 </script>
 

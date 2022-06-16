@@ -1,7 +1,12 @@
 <template>
   <div class="text-center">
     <h3 class="mb-5">Employees</h3>
-    <employees-list :employees="employees" @release-task="onTaskRelease" />
+    <div class="spinner-border" role="status" v-if="isEmployeesLoading" />
+    <employees-list
+      :employees="employees"
+      @release-task="onTaskRelease"
+      v-else
+    />
 
     <div class="row my-5">
       <div class="col">
@@ -21,7 +26,8 @@
       </div>
     </div>
 
-    <task-list :tasks="freeTasks" />
+    <div class="spinner-border" role="status" v-if="isFreeTasksLoading" />
+    <task-list :tasks="freeTasks" v-else />
 
     <base-dialog id="createTaskModal">
       <task-form @create="onTaskCreated" />
@@ -38,10 +44,17 @@ import useFreeTasks from "@/hooks/useFreeTasks";
 
 export default {
   setup() {
-    const { freeTasks, createTask, putTask } = useFreeTasks();
-    const { employees, putEmployee } = useEmployees();
-
-    console.log(freeTasks, employees);
+    const {
+      freeTasks,
+      createTask,
+      putTask,
+      isLoading: isFreeTasksLoading,
+    } = useFreeTasks();
+    const {
+      employees,
+      putEmployee,
+      isLoading: isEmployeesLoading,
+    } = useEmployees();
 
     return {
       freeTasks,
@@ -49,6 +62,8 @@ export default {
       employees,
       putEmployee,
       putTask,
+      isFreeTasksLoading,
+      isEmployeesLoading,
     };
   },
   methods: {
@@ -57,23 +72,35 @@ export default {
       this.freeTasks.push(releasedTask);
     },
     onTaskCreated(newTask) {
-      this.freeTasks.push(newTask);
-      this.createTask(newTask);
-    },
-    save() {
-      this.employees.forEach(async (employee) => {
-        employee.takenTasks.forEach((task) => {
-          task.isFree = false;
-        });
-        await this.putEmployee(employee.id, {
-          takenTasks: employee.takenTasks,
-        });
+      let formData = new FormData();
+      for (const key in newTask) {
+        if (key === "files") continue;
+        formData.append(key, newTask[key]);
+      }
+
+      Array.from(newTask.files).forEach((file) => {
+        formData.append("files", file);
       });
 
-      this.freeTasks.forEach(async (task) => {
-        task.isFree = true;
-        await this.putTask(task._id, task);
+      this.createTask(formData).then((res) => {
+        this.freeTasks.push(res.data.task);
       });
+    },
+    async save() {
+      for (const index in this.employees) {
+        this.employees[index].takenTasks.forEach((task) => {
+          task.isFree = false;
+        });
+
+        await this.putEmployee(this.employees[index].id, {
+          takenTasks: this.employees[index].takenTasks,
+        });
+      }
+
+      for (const index in this.freeTasks) {
+        this.freeTasks[index].isFree = true;
+        await this.putTask(this.freeTasks[index]._id, this.freeTasks[index]);
+      }
 
       location.reload();
     },

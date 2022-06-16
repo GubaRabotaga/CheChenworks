@@ -75,7 +75,7 @@ export default {
     const file = ref([]);
 
     const handleFileUpload = async () => {
-      console.log("selected file", file.value.files);
+      return file.value.files;
     };
 
     return {
@@ -90,24 +90,25 @@ export default {
         description: "",
         difficulty: "",
         deadline: "",
-        attachmentFiles: [],
+        files: [],
       },
     };
   },
   methods: {
     createTask() {
+      console.log(this.task);
       this.$emit("create", this.task);
       this.task = {
         title: "",
         description: "",
         difficulty: "",
         deadline: "",
-        attachmentFiles: [],
+        files: [],
       };
     },
-    submit() {
+    async submit() {
+      this.task.files = await this.handleFileUpload();
       this.createTask();
-      this.handleFileUpload();
     },
   },
 };

@@ -1,7 +1,7 @@
 import { ref } from "vue";
 
 export default function () {
-  const employers = ref([
+  const columns = ref([
     {
       name: "Waiting",
       id: 1,
@@ -22,9 +22,8 @@ export default function () {
       id: 4,
       takenTasks: [],
     },
-    
   ]);
   return {
-    employers,
+    columns,
   };
 }

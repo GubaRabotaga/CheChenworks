@@ -1,5 +1,5 @@
 import { onMounted, ref } from "vue";
-import { AuthAPIInstance } from "@/api";
+import { AuthAPIInstance, FormAuthAPIInstance } from "@/api";
 
 export default function () {
   const freeTasks = ref([]);
@@ -20,7 +20,7 @@ export default function () {
 
   const createTask = async (body) => {
     try {
-      await AuthAPIInstance.post("/tasks", body);
+      return await FormAuthAPIInstance.post("/tasks", body);
     } catch (error) {
       console.log(error);
     }
@@ -28,7 +28,7 @@ export default function () {
 
   const putTask = async (id, body) => {
     try {
-      await AuthAPIInstance.put(`/tasks/${id}`, body);
+      return await AuthAPIInstance.put(`/tasks/${id}`, body);
     } catch (error) {
       console.log(error);
     }
