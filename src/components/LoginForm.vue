@@ -32,10 +32,15 @@ export default {
   },
   methods: {
     async submit() {
-      await this.$store.dispatch("auth/onLogin", {
+      let result = await this.$store.dispatch("auth/onLogin", {
         email: this.email,
         password: this.password,
       });
+
+      if (result.name === "AxiosError") {
+        alert(result.response.data.message);
+        return;
+      }
 
       let link = this.$store.state.auth.credentials.user.roles.at(0);
 

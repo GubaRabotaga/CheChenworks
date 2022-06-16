@@ -50,6 +50,7 @@ export const authModule = {
         return response;
       } catch (error) {
         console.log(error.response.data.message);
+        return error;
       }
     },
     async onRegistration(
