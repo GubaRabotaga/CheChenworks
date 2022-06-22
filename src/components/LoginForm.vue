@@ -32,10 +32,14 @@ export default {
   },
   methods: {
     async submit() {
+      this.$store.dispatch("enableGlobalSpinner");
+
       let result = await this.$store.dispatch("auth/onLogin", {
         email: this.email,
         password: this.password,
       });
+
+      this.$store.dispatch("disableGlobalSpinner");
 
       if (result.name === "AxiosError") {
         alert(result.response.data.message);

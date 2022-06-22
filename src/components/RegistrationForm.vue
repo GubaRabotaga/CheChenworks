@@ -8,9 +8,10 @@
         placeholder="Email"
         v-model="email"
         :class="{
-          'is-invalid': v$.email.$invalid,
+          'is-invalid': v$.email.$invalid && hasChanged(1),
           'is-valid': !v$.email.$invalid,
         }"
+        @input="onChange"
         required
       />
       <div class="invalid-feedback">Invalid email</div>
@@ -23,9 +24,10 @@
         placeholder="Name"
         v-model="name"
         :class="{
-          'is-invalid': v$.name.$invalid,
+          'is-invalid': v$.name.$invalid && hasChanged(2),
           'is-valid': !v$.name.$invalid,
         }"
+        @input="onChange"
         required
       />
       <div class="invalid-feedback">Required</div>
@@ -38,14 +40,15 @@
         placeholder="Surname"
         v-model="surname"
         :class="{
-          'is-invalid': v$.surname.$invalid,
+          'is-invalid': v$.surname.$invalid && hasChanged(3),
           'is-valid': !v$.surname.$invalid,
         }"
+        @input="onChange"
         required
       />
       <div class="invalid-feedback">Required</div>
     </div>
-    <div class="form-group">
+    <div class="form-group" v-show="role === 'USER'">
       <input
         tabindex="4"
         class="form-control"
@@ -53,10 +56,10 @@
         placeholder="Skills"
         v-model="skills"
         :class="{
-          'is-invalid': v$.skills.$invalid,
+          'is-invalid': v$.skills.$invalid && hasChanged(4),
           'is-valid': !v$.skills.$invalid,
         }"
-        required
+        @input="onChange"
       />
       <div class="invalid-feedback">Required</div>
     </div>
@@ -65,9 +68,10 @@
         tabindex="5"
         class="form-control"
         :class="{
-          'is-invalid': v$.password.password.$invalid,
+          'is-invalid': v$.password.password.$invalid && hasChanged(5),
           'is-valid': !v$.password.password.$invalid,
         }"
+        @input="onChange"
         type="password"
         id="password"
         placeholder="Password"
@@ -83,9 +87,10 @@
         tabindex="6"
         class="form-control"
         :class="{
-          'is-invalid': v$.password.confirm.$invalid,
+          'is-invalid': v$.password.confirm.$invalid && hasChanged(6),
           'is-valid': !v$.password.confirm.$invalid,
         }"
+        @input="onChange"
         type="password"
         id="passwordRepeat"
         placeholder="Confirm password"
@@ -120,6 +125,21 @@
         />
         <label class="form-check-label" for="gridRadios2">Admin</label>
       </div>
+    </div>
+    <div class="form-group" v-show="role === 'USER'">
+      <input
+        tabindex="9"
+        class="form-control"
+        type="text"
+        :class="{
+          'is-invalid': v$.inviteCode.$invalid && hasChanged(9),
+          'is-valid': !v$.inviteCode.$invalid,
+        }"
+        @input="onChange"
+        placeholder="Invite code"
+        v-model="inviteCode"
+        required
+      />
     </div>
     <button
       :disabled="v$.$invalid"
@@ -169,6 +189,7 @@ import {
   minLength,
   maxLength,
   sameAs,
+  requiredIf,
 } from "@vuelidate/validators";
 
 export default {
@@ -181,13 +202,46 @@ export default {
       surname: "",
       skills: "",
       role: "USER",
+      inviteCode: "",
       activateModal: null,
     };
   },
   mounted() {
     this.activateModal = new Modal(document.getElementById("activateModal"));
+
+    const fieldCount = document.querySelector(
+      "#registration > form"
+    ).childElementCount;
+
+    for (let index = 0; index < fieldCount; index++) {
+      let element = document.querySelector(
+        `#registration > form > div:nth-child(${index}) > input`
+      );
+
+      if (element) {
+        element.hasChanged = false;
+      }
+    }
   },
   methods: {
+    onChange(event) {
+      if (event.target.hasChanged) {
+        return;
+      }
+
+      event.target.hasChanged = true;
+    },
+    hasChanged(index) {
+      let element = document.querySelector(
+        `#registration > form > div:nth-child(${index}) > input`
+      );
+
+      if (!element) {
+        return false;
+      }
+
+      return element.hasChanged;
+    },
     async submit() {
       await this.v$.$validate();
 
@@ -196,6 +250,8 @@ export default {
         return;
       }
 
+      this.$store.dispatch("enableGlobalSpinner");
+
       let result = await this.$store.dispatch("auth/onRegistration", {
         email: this.email,
         password: this.password.password,
@@ -203,7 +259,10 @@ export default {
         skills: this.skills,
         surname: this.surname,
         role: this.role,
+        inviteCode: this.inviteCode,
       });
+
+      this.$store.dispatch("disableGlobalSpinner");
 
       if (result.name === "AxiosError") {
         alert(result.response.data.message);
@@ -225,7 +284,8 @@ export default {
       },
       name: { required },
       surname: { required },
-      skills: { required },
+      skills: { requiredIf: requiredIf(this.role === "USER") },
+      inviteCode: { requiredIf: requiredIf(this.role === "USER") },
     };
   },
 };

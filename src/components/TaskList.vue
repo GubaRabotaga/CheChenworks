@@ -8,9 +8,11 @@
     :move="onFreeTaskMove"
     handle=".handle"
     @unchoose="onFreeTaskUnchoose"
+    @end="onTaskEnd"
     @choose="onTaskChoose"
     @start="onTaskStart"
     force-fallback="true"
+    filter=".ignore"
   >
     <template #item="{ element }">
       <div
@@ -25,22 +27,22 @@
             backgroundColor: $store.state.difficultyColors[element.difficulty],
           }"
         >
+          <button
+            class="btn btn-outline-dark p-0 ignore"
+            data-bs-toggle="modal"
+            data-bs-target="#updateTaskModal"
+            @click="updateTask(element)"
+          >
+            <redact-icon />
+          </button>
           <h5 class="text-dark my-auto">
             {{ element.title }} ({{ element.difficulty }})
           </h5>
           <move-icon />
         </div>
-        <div class="card-body">
+        <div class="card-body task-card-body">
           <p>{{ element.description }}</p>
-          <div v-for="attachment in element.attachments">
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              :href="baseFilesUrl + attachment"
-            >
-              FILE
-            </a>
-          </div>
+          <files-row :links="element.attachments" />
         </div>
       </div>
     </template>
@@ -48,16 +50,10 @@
 </template>
 
 <script>
-import MoveIcon from "@/components/icons/MoveIcon.vue";
-
+import FilesRow from "./FilesRow.vue";
 export default {
   props: {
     tasks: { type: Array, required: true },
-  },
-  data() {
-    return {
-      baseFilesUrl: `${import.meta.env.VITE_API_URL}/static/uploads/`,
-    };
   },
   methods: {
     onFreeTaskMove(event) {
@@ -73,8 +69,14 @@ export default {
     onTaskStart(event) {
       event.item.hidden = true;
     },
+    onTaskEnd(event) {
+      event.item.hidden = false;
+    },
+    updateTask(task) {
+      this.$emit("update-task", task);
+    },
   },
-  components: { MoveIcon },
+  components: { FilesRow },
 };
 </script>
 
@@ -89,5 +91,17 @@ export default {
 }
 .no-move {
   transition: transform 0s;
+}
+
+.task-card-body {
+  justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+}
+
+.files {
+  justify-content: start;
+  display: flex;
+  flex-direction: row;
 }
 </style>

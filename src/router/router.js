@@ -4,6 +4,7 @@ import AdminPanelView from "@/views/AdminPanelView.vue";
 import UserPanelView from "@/views/UserPanelView.vue";
 import AuthView from "@/views/AuthView.vue";
 import PermissionDeniedView from "@/views/PermissionDeniedView.vue";
+import EmployeeView from "@/views/EmployeeView.vue";
 import store from "@/store";
 
 const routes = [
@@ -42,6 +43,12 @@ const routes = [
         next();
       }
     },
+  },
+  {
+    path: "/employee/:id",
+    name: "Employee",
+    component: EmployeeView,
+    meta: { needAuth: true },
   },
   {
     path: "/auth",

@@ -34,6 +34,22 @@ export default function () {
     }
   };
 
+  const patchTask = async (id, body) => {
+    try {
+      return await AuthAPIInstance.patch(`/tasks/${id}`, body);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deleteTask = async (id) => {
+    try {
+      return await AuthAPIInstance.delete(`/tasks/${id}`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   onMounted(fetchTasks);
 
   return {
@@ -42,5 +58,7 @@ export default function () {
     fetchTasks,
     createTask,
     putTask,
+    patchTask,
+    deleteTask,
   };
 }

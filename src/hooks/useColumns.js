@@ -1,29 +1,60 @@
-import { ref } from "vue";
+import { computed, watch, ref } from "vue";
 
-export default function () {
+export default function (employee) {
+  const waitingTasks = computed(() => {
+    return employee.value?.takenTasks.filter(
+      (task) => task.state === "waiting"
+    );
+  });
+
+  const inProgressTasks = computed(() => {
+    return employee.value?.takenTasks.filter(
+      (task) => task.state === "in progress"
+    );
+  });
+
+  const stopedTasks = computed(() => {
+    return employee.value?.takenTasks.filter((task) => task.state === "stoped");
+  });
+
+  const closedTasks = computed(() => {
+    return employee.value?.takenTasks.filter((task) => task.state === "closed");
+  });
+
   const columns = ref([
     {
       name: "Waiting",
       id: 1,
-      takenTasks: [],
+      takenTasks: waitingTasks.value,
     },
     {
       name: "In progress",
       id: 2,
-      takenTasks: [],
+      takenTasks: inProgressTasks.value,
     },
     {
       name: "Stoped",
       id: 3,
-      takenTasks: [],
+      takenTasks: stopedTasks.value,
     },
     {
       name: "Closed",
       id: 4,
-      takenTasks: [],
+      takenTasks: closedTasks.value,
     },
   ]);
+
+  watch([waitingTasks, inProgressTasks, stopedTasks, closedTasks], (array) => {
+    for (let index = 0; index < array.length; index++) {
+      columns.value[index].takenTasks = array[index];
+    }
+  });
+
   return {
     columns,
+    closedTasks,
+    stopedTasks,
+    inProgressTasks,
+    waitingTasks,
   };
 }

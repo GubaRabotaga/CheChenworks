@@ -13,9 +13,9 @@ export const AuthAPI = {
     return DefaultAPIInstance.post(url, data);
   },
 
-  async registration(email, password, role, name, surname, skills) {
+  async registration(email, password, role, name, surname, skills, inviteCode) {
     const url = "/auth/registration";
-    const data = { email, password, role, name, surname, skills };
+    const data = { email, password, role, name, surname, skills, inviteCode };
 
     return DefaultAPIInstance.post(url, data);
   },

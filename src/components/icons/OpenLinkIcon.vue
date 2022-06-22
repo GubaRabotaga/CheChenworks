@@ -17,3 +17,9 @@
     />
   </svg>
 </template>
+
+<script>
+export default {
+  name: "open-link-icon",
+};
+</script>

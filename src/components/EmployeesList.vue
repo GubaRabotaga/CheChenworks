@@ -10,7 +10,7 @@
                 <router-link
                   class="btn btn-outline-success"
                   style="margin-left: auto; float: right"
-                  to="/user"
+                  :to="`/employee/${employee.user}`"
                 >
                   <open-link-icon />
                 </router-link>
@@ -27,7 +27,7 @@
                 group="tasks"
                 itemKey="id"
                 @choose="onTaskChoose"
-                filter=".btn-close"
+                filter=".ignore"
               >
                 <template #item="{ element, index }">
                   <div
@@ -41,7 +41,7 @@
                       {{ element.title }} ({{ element.difficulty }})
                     </h5>
                     <button
-                      class="btn btn-close"
+                      class="btn btn-close ignore"
                       @click="releaseTask(employee, index)"
                     ></button>
                   </div>
@@ -60,25 +60,15 @@
 </template>
 
 <script>
-import OpenLinkIcon from "./icons/OpenLinkIcon.vue";
-
 export default {
   props: {
     employees: { type: Array, required: true },
   },
-  setup(props, context) {
-    let releaseTask = (employee, taskIndex) => {
-      let deletedTask = employee.takenTasks.splice(taskIndex, 1).at(0);
-      context.emit("release-task", deletedTask);
-    };
-
-    console.log(props.employees);
-
-    return {
-      releaseTask,
-    };
-  },
   methods: {
+    releaseTask(employee, taskIndex) {
+      let deletedTask = employee.takenTasks.splice(taskIndex, 1).at(0);
+      this.$emit("release-task", deletedTask);
+    },
     getTotalDifficulty(takenTasks) {
       return takenTasks.reduce((total, task) => total + task?.difficulty, 0);
     },
@@ -87,7 +77,6 @@ export default {
     },
   },
   emits: ["release-task"],
-  components: { OpenLinkIcon },
 };
 </script>
 

@@ -1,36 +1,51 @@
 <template>
   <div class="text-center">
-    <h3 class="mb-5">Employees</h3>
+    <button class="btn btn-outline-secondary w-100 mb-5" @click="save">
+      Save
+    </button>
+
+    <div class="mb-5 header">
+      <h3 class="my-auto">Employees</h3>
+      <button class="btn btn-outline-info" @click="onInviteClicked">
+        <invite-icon v-if="!isInviteCodeCopied" />
+        <check-icon v-else />
+        Copy invite
+      </button>
+    </div>
+
     <div class="spinner-border" role="status" v-if="isEmployeesLoading" />
     <employees-list
       :employees="employees"
       @release-task="onTaskRelease"
+      @update-task="onTaskUpdate"
       v-else
     />
 
-    <div class="row my-5">
-      <div class="col">
-        <button class="btn btn-info" @click="save">Save</button>
-      </div>
-      <div class="col">
-        <h3 class="text-center">Tasks</h3>
-      </div>
-      <div class="col">
-        <button
-          class="btn btn-primary"
-          data-bs-toggle="modal"
-          data-bs-target="#createTaskModal"
-        >
-          Add
-        </button>
-      </div>
+    <div class="my-5 mb-5 header">
+      <h3 class="my-auto">Tasks</h3>
+
+      <button
+        class="btn btn-outline-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#createTaskModal"
+      >
+        Add
+      </button>
     </div>
 
     <div class="spinner-border" role="status" v-if="isFreeTasksLoading" />
-    <task-list :tasks="freeTasks" v-else />
+    <task-list :tasks="freeTasks" @update-task="onTaskUpdate" v-else />
 
     <base-dialog id="createTaskModal">
-      <task-form @create="onTaskCreated" />
+      <task-create-form @create="onTaskCreated" />
+    </base-dialog>
+
+    <base-dialog id="updateTaskModal" v-if="taskToUpdate">
+      <task-update-form
+        :task="taskToUpdate"
+        @update="updateTask"
+        @delete="deleteTask"
+      />
     </base-dialog>
   </div>
 </template>
@@ -38,9 +53,12 @@
 <script>
 import TaskList from "@/components/TaskList.vue";
 import EmployeesList from "@/components/EmployeesList.vue";
-import TaskForm from "@/components/TaskForm.vue";
+import TaskCreateForm from "@/components/TaskCreateForm.vue";
+import TaskUpdateForm from "@/components/TaskUpdateForm.vue";
 import useEmployees from "@/hooks/useEmployees";
 import useFreeTasks from "@/hooks/useFreeTasks";
+import store from "@/store";
+import { ref, watch } from "vue";
 
 export default {
   setup() {
@@ -48,13 +66,32 @@ export default {
       freeTasks,
       createTask,
       putTask,
+      patchTask,
+      deleteTask,
       isLoading: isFreeTasksLoading,
+      fetchTasks,
     } = useFreeTasks();
     const {
       employees,
       putEmployee,
+      fetchEmployees,
       isLoading: isEmployeesLoading,
     } = useEmployees();
+
+    const inviteCode = ref(store.state.auth.credentials.user.project);
+    const clipboard = ref();
+
+    document.addEventListener("copy", async () => {
+      clipboard.value = await navigator.clipboard.readText();
+    });
+
+    const isInviteCodeCopied = ref(false);
+
+    watch(clipboard, () => {
+      isInviteCodeCopied.value = clipboard.value === inviteCode.value;
+    });
+
+    const taskToUpdate = ref({});
 
     return {
       freeTasks,
@@ -62,14 +99,65 @@ export default {
       employees,
       putEmployee,
       putTask,
+      deleteTaskReq: deleteTask,
+      patchTask,
       isFreeTasksLoading,
       isEmployeesLoading,
+      isInviteCodeCopied,
+      inviteCode,
+      taskToUpdate,
+      fetchTasks,
+      fetchEmployees,
     };
   },
   methods: {
+    onInviteClicked() {
+      navigator.clipboard.writeText(this.inviteCode);
+
+      let event = new Event("copy");
+      document.dispatchEvent(event);
+    },
     onTaskRelease(releasedTask) {
       releasedTask.isFree = true;
       this.freeTasks.push(releasedTask);
+    },
+    onTaskUpdate(task) {
+      this.taskToUpdate = task;
+    },
+    deleteTask(taskId) {
+      this.$store.dispatch("enableGlobalSpinner");
+
+      this.deleteTaskReq(taskId);
+
+      this.$store.dispatch("disableGlobalSpinner");
+
+      this.freeTasks = this.freeTasks.filter((task) => task._id !== taskId);
+
+      this.save();
+    },
+    updateTask(task) {
+      const old = this.freeTasks.find((t) => t._id === task._id);
+      const indexOfOld = this.freeTasks.indexOf(old);
+
+      task = { ...old, ...task };
+
+      let formData = new FormData();
+      for (const key in task) {
+        if (key === "files") continue;
+        formData.append(key, task[key]);
+      }
+
+      Array.from(task.files).forEach((file) => {
+        formData.append("files", file);
+      });
+
+      this.$store.dispatch("enableGlobalSpinner");
+
+      this.putTask(task._id, formData).then((res) => {
+        this.freeTasks[indexOfOld] = res.data.task;
+        this.save();
+        this.$store.dispatch("disableGlobalSpinner");
+      });
     },
     onTaskCreated(newTask) {
       let formData = new FormData();
@@ -82,11 +170,16 @@ export default {
         formData.append("files", file);
       });
 
+      this.$store.dispatch("enableGlobalSpinner");
+
       this.createTask(formData).then((res) => {
         this.freeTasks.push(res.data.task);
+        this.$store.dispatch("disableGlobalSpinner");
       });
     },
     async save() {
+      this.$store.dispatch("enableGlobalSpinner");
+
       for (const index in this.employees) {
         this.employees[index].takenTasks.forEach((task) => {
           task.isFree = false;
@@ -98,15 +191,24 @@ export default {
       }
 
       for (const index in this.freeTasks) {
-        this.freeTasks[index].isFree = true;
-        await this.putTask(this.freeTasks[index]._id, this.freeTasks[index]);
+        await this.patchTask(this.freeTasks[index]._id, { isFree: true });
       }
 
-      location.reload();
+      await this.fetchEmployees();
+      await this.fetchTasks();
+
+      this.$store.dispatch("disableGlobalSpinner");
     },
   },
-  components: { TaskList, EmployeesList, TaskForm },
+  components: { TaskList, EmployeesList, TaskCreateForm, TaskUpdateForm },
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.header {
+  display: flex;
+  justify-content: space-evenly;
+  align-content: center;
+  flex-direction: row;
+}
+</style>

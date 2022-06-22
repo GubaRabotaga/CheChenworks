@@ -13,6 +13,14 @@ export default createStore({
       difficultyColors: difficultyColors,
     };
   },
+  actions: {
+    enableGlobalSpinner() {
+      document.getElementById("spinner-overlay").style.display = "block";
+    },
+    disableGlobalSpinner() {
+      document.getElementById("spinner-overlay").style.display = "none";
+    },
+  },
   modules: {
     auth: authModule,
   },

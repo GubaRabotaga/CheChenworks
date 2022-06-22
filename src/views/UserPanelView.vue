@@ -1,60 +1,60 @@
 <template>
   <div class="text-center">
-    <column :columns="columns" @release-task="onTaskRelease" />
-
-    <div class="row my-5">
-      <div class="col">
-        <button class="btn btn-danger">Delete</button>
-      </div>
-      <div class="col">
-        <h3 class="text-center">Tasks</h3>
-      </div>
-      <div class="col">
-        <button
-          class="btn btn-primary"
-          data-bs-toggle="modal"
-          data-bs-target="#createPostModal"
-        >
-          Add
-        </button>
-      </div>
-    </div>
-
-    <task-list :tasks="employee.takenTasks" />
-
-    <base-dialog id="createPostModal">
-      <task-form @create="onTaskCreated" />
-    </base-dialog>
+    <button class="btn btn-outline-secondary w-100 mb-5" @click="save">
+      Save
+    </button>
+    <div class="spinner-border d-flex mx-auto" role="status" v-if="isLoading" />
+    <column :columns="columns" v-else />
   </div>
 </template>
 
 <script>
-import Information from "@/components/information.vue";
-import TaskList from "@/components/TaskList.vue";
 import Column from "@/components/Column.vue";
-import TaskForm from "@/components/TaskForm.vue";
 import useColumns from "@/hooks/useColumns";
 import useEmployee from "@/hooks/useEmployee";
+import { AuthAPIInstance } from "@/api";
+import store from "@/store";
 
 export default {
   setup() {
-    const { employee } = useEmployee();
-    const { columns } = useColumns();
+    const { employee, isLoading } = useEmployee(
+      store.state.auth.credentials.user.id
+    );
+    const { columns, closedTasks, stopedTasks, inProgressTasks, waitingTasks } =
+      useColumns(employee);
 
     return {
       employee,
+      isLoading,
       columns,
+      closedTasks,
+      stopedTasks,
+      inProgressTasks,
+      waitingTasks,
     };
   },
   methods: {
-    onTaskRelease(releasedTask) {
-      this.tasks.push(releasedTask);
-    },
-    onTaskCreated(newTask) {
-      this.tasks.push(newTask);
+    async save() {
+      this.$store.dispatch("enableGlobalSpinner");
+
+      for (const i in this.columns) {
+        await this.columns[i].takenTasks.forEach(async (task) => {
+          task.state = this.columns[i].name.toLowerCase();
+
+          const body = {
+            donePercents: task.donePercents,
+            state: task.state,
+            usedHours: task.usedHours,
+          };
+
+          await AuthAPIInstance.patch(`/tasks/${task._id}`, body);
+        });
+      }
+
+      this.$store.dispatch("disableGlobalSpinner");
     },
   },
-  components: { TaskList, Column, TaskForm, Information },
+  components: { Column },
 };
 </script>
 

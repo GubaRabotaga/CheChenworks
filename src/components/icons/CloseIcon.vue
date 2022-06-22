@@ -12,3 +12,9 @@
     />
   </svg>
 </template>
+
+<script>
+export default {
+  name: "close-icon",
+};
+</script>

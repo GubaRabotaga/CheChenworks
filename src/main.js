@@ -5,14 +5,19 @@ import Draggable from "vuedraggable";
 import App from "@/App.vue";
 import router from "@/router/router";
 import store from "@/store";
-import components from "@/components/UI";
+import ui from "@/components/UI";
+import icons from "@/components/icons";
 
 const app = createApp(App);
 
 app.component("base-draggable", Draggable);
 
-components.forEach((component) => {
+ui.forEach((component) => {
   app.component(component.name, component);
+});
+
+icons.forEach((icon) => {
+  app.component(icon.name, icon);
 });
 
 app.use(router).use(store).mount("#app");

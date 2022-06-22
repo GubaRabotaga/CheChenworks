@@ -3,6 +3,9 @@
   <div class="my-5 mx-3">
     <router-view></router-view>
   </div>
+  <div id="spinner-overlay">
+    <div class="spinner-border global-spinner" role="status" />
+  </div>
 </template>
 
 <script>
@@ -15,6 +18,37 @@ export default {
 
 <style lang="scss">
 @import "@/assets/style.scss";
+
+#spinner-overlay {
+  position: fixed;
+  display: none;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 64, 50, 0.5);
+  z-index: 2;
+}
+
+.global-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -50px;
+  margin-left: -50px;
+  width: 100px;
+  height: 100px;
+}
+
+.unselectable {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 #app {
   font-family: "JetBrains Mono", monospace;
   -webkit-font-smoothing: antialiased;

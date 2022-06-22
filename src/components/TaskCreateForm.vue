@@ -10,7 +10,7 @@
       ></button>
     </div>
     <div class="modal-body">
-      <form @submit.prevent id="task-form" @submit="submit">
+      <form @submit.prevent id="task-create-form" @submit="submit">
         <div class="form-group">
           <input
             class="form-control"
@@ -57,7 +57,7 @@
       </form>
     </div>
     <div class="modal-footer">
-      <button type="submit" class="btn btn-primary" form="task-form">
+      <button type="submit" class="btn btn-primary" form="task-create-form">
         Create
       </button>
       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
@@ -69,17 +69,18 @@
 
 <script>
 import { ref } from "vue";
+import { Modal } from "bootstrap";
 
 export default {
   setup() {
     const file = ref([]);
 
-    const handleFileUpload = async () => {
+    const getFiles = () => {
       return file.value.files;
     };
 
     return {
-      handleFileUpload,
+      getFiles,
       file,
     };
   },
@@ -96,8 +97,13 @@ export default {
   },
   methods: {
     createTask() {
-      console.log(this.task);
       this.$emit("create", this.task);
+
+      const element = document.getElementById("createTaskModal");
+      const modal = Modal.getInstance(element);
+
+      modal.hide();
+
       this.task = {
         title: "",
         description: "",
@@ -107,7 +113,7 @@ export default {
       };
     },
     async submit() {
-      this.task.files = await this.handleFileUpload();
+      this.task.files = this.getFiles();
       this.createTask();
     },
   },

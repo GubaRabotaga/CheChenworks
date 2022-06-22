@@ -16,19 +16,19 @@
                 animation="150"
                 group="tasks"
                 itemKey="id"
-                @choose="onTaskChoose"
-                filter=".btn-close"
+                handle=".handle"
+                force-fallback="true"
               >
-                <template #item="{ element, index }">
+                <template #item="{ element }">
                   <div>
                     <div
-                      class="card-header"
+                      class="card-header handle"
                       :style="{
                         backgroundColor:
                           $store.state.difficultyColors[element.difficulty],
                       }"
                     >
-                      <h5><strong>Name:</strong>{{ element.title }}</h5>
+                      <h5><strong>Name: </strong>{{ element.title }}</h5>
                     </div>
                     <h5
                       class="task-title"
@@ -38,24 +38,97 @@
                       }"
                     >
                       <span v-show="!element.Uphere">
-                        <strong>Description:</strong>{{ element.description }}
+                        <div>
+                          <strong>Description: </strong>
+                        </div>
+                        <div>{{ element.description }}</div>
+                        <files-row :links="element.attachments" />
                       </span>
 
                       <div v-show="element.Uphere">
-                        <h5><strong>Director:</strong>{{ element.Uphere }}</h5>
-                        <h5><strong>Executor:</strong>User</h5>
                         <h5>
-                          <strong>Standard:</strong>{{ getHours(element) }}
+                          <strong>Director: </strong
+                          >{{
+                            `${element.director.surname} ${element.director.name}`
+                          }}
                         </h5>
-                        <h5><strong>Used up:</strong> 0h</h5>
-                        <h5 contenteditable="true">
-                          <strong>Progress:</strong>{{ element.progress }}
+                        <h5>
+                          <strong>Standard: </strong>{{ getHours(element) }}h
                         </h5>
+                        <h5>
+                          <strong>Used: </strong> {{ element.usedHours }}h
+                          <strong
+                            class="change1 unselectable"
+                            :style="{
+                              backgroundColor:
+                                $store.state.difficultyColors[
+                                  element.difficulty
+                                ],
+                            }"
+                            @mousedown="addHour(element)"
+                          >
+                            +
+                          </strong>
+
+                          <strong
+                            class="change2 unselectable"
+                            :style="{
+                              backgroundColor:
+                                $store.state.difficultyColors[
+                                  element.difficulty
+                                ],
+                            }"
+                            @mousedown="deleteHour(element)"
+                          >
+                            -
+                          </strong>
+                        </h5>
+                        <h5>
+                          <strong>Progress: </strong
+                          >{{ Math.trunc(element.donePercents * 100) }}%
+                          <strong
+                            class="change1 unselectable"
+                            :style="{
+                              backgroundColor:
+                                $store.state.difficultyColors[
+                                  element.difficulty
+                                ],
+                            }"
+                            @mousedown="addPros(element)"
+                          >
+                            +
+                          </strong>
+
+                          <strong
+                            class="change2 unselectable"
+                            :style="{
+                              backgroundColor:
+                                $store.state.difficultyColors[
+                                  element.difficulty
+                                ],
+                            }"
+                            @mousedown="delPros(element)"
+                          >
+                            -
+                          </strong>
+                        </h5>
+
+                        <div class="progress">
+                          <div
+                            class="progress-bar"
+                            role="progressbar"
+                            v-bind:style="{
+                              width: element.donePercents * 100 + '%',
+                            }"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                          ></div>
+                        </div>
                       </div>
 
                       <strong v-on:click="element.Uphere = !element.Uphere">
                         <strong
-                          class="information"
+                          class="information unselectable"
                           :style="{
                             backgroundColor:
                               $store.state.difficultyColors[element.difficulty],
@@ -76,37 +149,44 @@
 </template>
 
 <script>
+import FilesRow from "./FilesRow.vue";
 export default {
-  data() {
-    return {
-      upHere: false,
-    };
-  },
-
   props: {
     columns: { type: Array, required: true },
   },
-  setup(_, context) {
-    let releaseTask = (columns, taskIndex) => {
-      let deletedTask = columns.takenTasks.splice(taskIndex, 1).at(0);
-      context.emit("release-task", deletedTask);
-    };
-    return {
-      releaseTask,
-    };
-  },
   methods: {
-    getTotalDifficulty(takenTasks) {
-      return takenTasks.reduce((total, task) => total + task.difficulty, 0);
-    },
     getHours(task) {
       let date1 = new Date(task.deadline);
       let date2 = new Date(task.startTime);
       let diff = date1.getTime() - date2.getTime();
-      return parseInt((diff / (1000 * 60 * 60)) % 24);
+      return parseInt(diff / (1000 * 60 * 60));
+    },
+    addHour(task) {
+      task.usedHours += 1;
+    },
+    deleteHour(task) {
+      task.usedHours -= 1;
+
+      if (task.usedHours < 0) {
+        task.usedHours = 0;
+      }
+    },
+    addPros(task) {
+      task.donePercents += 0.01;
+
+      if (task.donePercents > 0.99) {
+        task.donePercents = 1;
+      }
+    },
+    delPros(task) {
+      task.donePercents -= 0.01;
+
+      if (task.donePercents < 0.01) {
+        task.donePercents = 0;
+      }
     },
   },
-  emits: ["release-task"],
+  components: { FilesRow },
 };
 </script>
 
@@ -118,14 +198,47 @@ export default {
   flex-wrap: nowrap;
 }
 
-.list-group {
-  min-height: 20px;
-}
-
-.list-group-item {
-  background-color: $teal-100;
+.handle {
   cursor: move;
 }
+
+.change1 {
+  border-radius: 5px;
+  width: 21px;
+  height: 21px;
+  font-size: medium;
+  position: absolute;
+  margin-top: 8px;
+  margin-left: auto;
+  margin-right: end;
+  text-align: center;
+  right: 28px;
+}
+.change1:hover {
+  color: white;
+}
+.change2 {
+  border-radius: 5px;
+  width: 21px;
+  height: 21px;
+  font-size: medium;
+  position: absolute;
+  margin-top: 8px;
+  margin-left: auto;
+  margin-right: end;
+  text-align: center;
+  right: 52px;
+}
+.change2:hover {
+  color: white;
+}
+
+.list-group {
+  min-height: 20px;
+  width: 100%;
+  height: 100%;
+}
+
 .btn {
   position: absolute;
   margin-top: 12px;
@@ -133,6 +246,7 @@ export default {
   margin-right: end;
   right: 25px;
 }
+
 .information {
   width: 25px;
   height: 25px;
@@ -142,6 +256,7 @@ export default {
   margin-right: end;
   text-align: center;
   right: 16px;
+  cursor: pointer;
 }
 .information:hover {
   color: white;

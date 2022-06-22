@@ -55,7 +55,7 @@ export const authModule = {
     },
     async onRegistration(
       { commit },
-      { email, password, role, name, surname, skills }
+      { email, password, role, name, surname, skills, inviteCode }
     ) {
       try {
         const response = await AuthAPI.registration(
@@ -64,7 +64,8 @@ export const authModule = {
           role,
           name,
           surname,
-          skills
+          skills,
+          inviteCode
         );
 
         console.log(response);

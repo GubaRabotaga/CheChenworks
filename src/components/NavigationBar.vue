@@ -1,10 +1,7 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
     <div class="container">
-      <a
-        class="navbar-brand nav-link m-0"
-        @click="goToPanel"
-        style="cursor: pointer"
+      <a class="navbar-brand nav-link m-0" @click="goToPanel"
         >Project manager</a
       >
       <button
@@ -22,9 +19,7 @@
       <div class="collapse navbar-collapse" id="navbarToggler">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item" v-if="$store.state.auth.isAuth">
-            <button class="btn btn-outline-light" @click="logout">
-              <logout-icon />
-            </button>
+            <a class="nav-link" @click="logout"><logout-icon /> Log out</a>
           </li>
           <li class="nav-item" v-else>
             <router-link class="nav-link" to="/auth">Authorization</router-link>
@@ -47,7 +42,7 @@ export default {
         return;
       }
 
-      link = link.trim().toLowerCase();
+      link = "/" + link.trim().toLowerCase();
 
       this.$router.push(link);
     },
@@ -63,5 +58,9 @@ export default {
 <style lang="scss" scoped>
 .nav-item {
   align-self: center;
+}
+
+a {
+  cursor: pointer;
 }
 </style>
