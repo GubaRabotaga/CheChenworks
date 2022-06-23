@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent @submit="submit">
+  <form @submit.prevent="submit">
     <div class="form-group">
       <input
         tabindex="1"
@@ -52,13 +52,13 @@
       <input
         tabindex="4"
         class="form-control"
-        type="text"
         placeholder="Skills"
         v-model="skills"
         :class="{
           'is-invalid': v$.skills.$invalid && hasChanged(4),
           'is-valid': !v$.skills.$invalid,
         }"
+        :type="role === 'ADMIN' ? 'hidden' : 'text'"
         @input="onChange"
       />
       <div class="invalid-feedback">Required</div>
@@ -130,7 +130,7 @@
       <input
         tabindex="9"
         class="form-control"
-        type="text"
+        :type="role === 'ADMIN' ? 'hidden' : 'text'"
         :class="{
           'is-invalid': v$.inviteCode.$invalid && hasChanged(9),
           'is-valid': !v$.inviteCode.$invalid,
