@@ -5,9 +5,9 @@
         <div class="col mb-3" v-for="column in columns" :key="column.id">
           <div class="card card-columns">
             <div class="card-header">
-              <h3 class="d-flex align-items-center">
+              <h4 class="d-flex align-items-center">
                 {{ column.name }}
-              </h3>
+              </h4>
             </div>
             <div class="card-body">
               <base-draggable
@@ -42,7 +42,7 @@
                           <strong>Description: </strong>
                         </div>
                         <div>{{ element.description }}</div>
-                        <files-row :links="element.attachments" />
+                        <files-row class="mt-3" :links="element.attachments" />
                       </span>
 
                       <div v-show="element.Uphere">
@@ -82,6 +82,9 @@
                           >
                             -
                           </strong>
+                        </h5>
+                        <h5>
+                          <strong>Difficulty:</strong> {{ element.difficulty }}
                         </h5>
                         <h5>
                           <strong>Progress: </strong
@@ -263,7 +266,6 @@ export default {
 }
 
 .card-columns {
-  border-color: $indigo;
   border-width: 2px;
   margin-bottom: 2em;
   min-width: 15em;

@@ -1,7 +1,7 @@
 <template>
-  <div class="text-center">
+  <div class="text-center panel">
     <button class="btn btn-outline-secondary w-100 mb-5" @click="save">
-      Save
+      <save-icon class="btn-icon" />Save
     </button>
     <div class="spinner-border d-flex mx-auto" role="status" v-if="isLoading" />
     <column :columns="columns" v-else />

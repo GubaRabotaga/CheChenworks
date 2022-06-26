@@ -28,11 +28,19 @@
                 }"
               >
                 <span v-show="!element.Uphere">
-                  <div>
-                    <strong>Description: </strong>
-                  </div>
                   <div>{{ element.description }}</div>
-                  <files-row :links="element.attachments" />
+                  <files-row class="mt-3" :links="element.attachments" />
+                  <div class="progress mt-3">
+                    <div
+                      class="progress-bar"
+                      role="progressbar"
+                      v-bind:style="{
+                        width: element.donePercents * 100 + '%',
+                      }"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    ></div>
+                  </div>
                 </span>
 
                 <div v-show="element.Uphere">
@@ -44,22 +52,7 @@
                   </h5>
                   <h5><strong>Standard: </strong>{{ getHours(element) }}h</h5>
                   <h5><strong>Used: </strong> {{ element.usedHours }}h</h5>
-                  <h5>
-                    <strong>Progress: </strong
-                    >{{ Math.trunc(element.donePercents * 100) }}%
-                  </h5>
-
-                  <div class="progress">
-                    <div
-                      class="progress-bar"
-                      role="progressbar"
-                      v-bind:style="{
-                        width: element.donePercents * 100 + '%',
-                      }"
-                      aria-valuemin="0"
-                      aria-valuemax="100"
-                    ></div>
-                  </div>
+                  <h5><strong>Difficulty:</strong> {{ element.difficulty }}</h5>
                 </div>
 
                 <strong v-on:click="element.Uphere = !element.Uphere">
@@ -153,7 +146,7 @@ export default {
 }
 
 .card-columns {
-  border-color: $indigo;
+  border-color: $light;
   border-width: 2px;
   margin-bottom: 2em;
   min-width: 15em;

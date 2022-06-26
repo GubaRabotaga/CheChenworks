@@ -7,6 +7,10 @@ import RedactIcon from "./RedactIcon.vue";
 import InviteIcon from "./InviteIcon.vue";
 import CheckIcon from "./CheckIcon.vue";
 import DeleteIcon from "./DeleteIcon.vue";
+import DashboardIcon from "./DashboardIcon.vue";
+import PlusIcon from "./PlusIcon.vue";
+import PersonWorkspaceIcon from "./PersonWorkspaceIcon.vue";
+import SaveIcon from "./SaveIcon.vue";
 
 export default [
   CloseIcon,
@@ -18,4 +22,8 @@ export default [
   InviteIcon,
   CheckIcon,
   DeleteIcon,
+  DashboardIcon,
+  PlusIcon,
+  PersonWorkspaceIcon,
+  SaveIcon,
 ];

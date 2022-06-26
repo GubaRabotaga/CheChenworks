@@ -1,5 +1,6 @@
-$primary: indigo;
+$primary: #3a36db;
 $secondary: teal;
+$light: #a8cbfe;
 // $success: ;
 // $info: ;
 // $warning: ;
@@ -8,3 +9,64 @@ $secondary: teal;
 // $dark: ;
 
 @import "@/../node_modules/bootstrap/scss/bootstrap";
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2rem;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon {
+  margin-right: 5px;
+}
+
+.progress-bar {
+  background-color: $secondary;
+}
+
+.progress {
+  height: 6px;
+}
+
+.nav-link {
+  border-radius: 15px;
+}
+
+.navbar-nav .nav-link {
+  padding: 0.5rem;
+}
+
+.nav-pills .nav-link {
+  border-radius: 2rem;
+}
+
+.navbar-light .navbar-nav .show > .nav-link,
+.navbar-light .navbar-nav .nav-link.active {
+  background-color: $primary;
+  color: $white;
+}
+
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+  background-color: $secondary;
+}
+
+.card {
+  border-radius: 2rem;
+}
+
+.card-header {
+  background-color: $cyan-100;
+}
+
+.card-header:first-child {
+  border-color: transparent;
+  border-radius: 1.9rem 1.9rem 0 0 !important;
+}

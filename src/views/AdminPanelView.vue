@@ -1,14 +1,14 @@
 <template>
-  <div class="text-center">
+  <div class="text-center panel">
     <button class="btn btn-outline-secondary w-100 mb-5" @click="save">
-      Save
+      <save-icon class="btn-icon" /> Save
     </button>
 
     <div class="mb-5 header">
       <h3 class="my-auto">Employees</h3>
-      <button class="btn btn-outline-info" @click="onInviteClicked">
-        <invite-icon v-if="!isInviteCodeCopied" />
-        <check-icon v-else />
+      <button class="btn btn-outline-primary" @click="onInviteClicked">
+        <invite-icon v-if="!isInviteCodeCopied" class="btn-icon" />
+        <check-icon v-else class="btn-icon" />
         Copy invite
       </button>
     </div>
@@ -29,6 +29,7 @@
         data-bs-toggle="modal"
         data-bs-target="#createTaskModal"
       >
+        <plus-icon class="btn-icon" />
         Add
       </button>
     </div>

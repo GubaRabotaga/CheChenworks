@@ -132,7 +132,7 @@
         class="form-control"
         :type="role === 'ADMIN' ? 'hidden' : 'text'"
         :class="{
-          'is-invalid': v$.inviteCode.$invalid && hasChanged(9),
+          'is-invalid': v$.inviteCode.$invalid && hasChanged(8),
           'is-valid': !v$.inviteCode.$invalid,
         }"
         @input="onChange"
@@ -140,14 +140,15 @@
         v-model="inviteCode"
         required
       />
+      <div class="invalid-feedback">Required</div>
     </div>
     <button
       :disabled="v$.$invalid"
       tabindex="9"
       type="submit"
-      class="btn btn-primary sign-in-btn"
+      class="btn btn-primary sign-up-btn"
     >
-      Sign in
+      Sign up
     </button>
   </form>
 
@@ -296,7 +297,7 @@ export default {
   margin-bottom: 20px;
 }
 
-.sign-in-btn {
+.sign-up-btn {
   margin-top: 20px;
   width: 100%;
 }

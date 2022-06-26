@@ -7,7 +7,6 @@
     itemKey="id"
     :move="onFreeTaskMove"
     handle=".handle"
-    @unchoose="onFreeTaskUnchoose"
     @end="onTaskEnd"
     @choose="onTaskChoose"
     @start="onTaskStart"
@@ -28,7 +27,7 @@
           }"
         >
           <button
-            class="btn btn-outline-dark p-0 ignore"
+            class="btn btn-outline-dark ignore"
             data-bs-toggle="modal"
             data-bs-target="#updateTaskModal"
             @click="updateTask(element)"
@@ -51,6 +50,7 @@
 
 <script>
 import FilesRow from "./FilesRow.vue";
+
 export default {
   props: {
     tasks: { type: Array, required: true },
@@ -58,10 +58,6 @@ export default {
   methods: {
     onFreeTaskMove(event) {
       event.dragged.hidden = false;
-      event.dragged.lastElementChild.hidden = true;
-    },
-    onFreeTaskUnchoose(event) {
-      event.item.lastElementChild.hidden = false;
     },
     onTaskChoose(event) {
       event.item.style.transform = "rotate(5deg)";

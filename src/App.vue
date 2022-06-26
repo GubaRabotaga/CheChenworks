@@ -1,6 +1,6 @@
 <template>
   <navigation-bar />
-  <div class="my-5 mx-3">
+  <div class="mx-2 my-4">
     <router-view></router-view>
   </div>
   <div id="spinner-overlay">
@@ -18,6 +18,22 @@ export default {
 
 <style lang="scss">
 @import "@/assets/style.scss";
+
+body {
+  min-height: 100vh;
+  background-color: $light;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+.panel {
+  background-color: $white;
+  padding: 25px;
+  border-radius: 50px;
+  min-height: 91vh;
+}
 
 #spinner-overlay {
   position: fixed;
@@ -49,8 +65,8 @@ export default {
   user-select: none;
 }
 
-#app {
-  font-family: "JetBrains Mono", monospace;
+html * {
+  font-family: "Segoe UI", monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

@@ -89,7 +89,7 @@ export default {
 }
 
 .list-group-item {
-  background-color: $teal-100;
+  border-radius: 2rem !important;
   cursor: move;
 }
 
@@ -98,14 +98,9 @@ export default {
   min-height: 42px;
   min-width: 200px;
   height: 100%;
-  background-color: $gray-200;
-  border-style: dotted;
-  border-width: 2px;
-  border-radius: 2%;
 }
 
 .card-employee {
-  border-color: $primary;
   border-width: 2px;
   margin-bottom: 2em;
   min-width: 15em;
@@ -113,10 +108,11 @@ export default {
 }
 
 .badge {
+  border-radius: 2rem;
   margin-left: auto;
-  margin-right: 7px;
+  margin-right: 16px;
   margin-bottom: 5px;
-  background-color: $info;
+  background-color: #99b2c6;
   float: right;
 }
 

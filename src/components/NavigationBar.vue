@@ -1,8 +1,8 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
-      <a class="navbar-brand nav-link m-0" @click="goToPanel"
-        >Project manager</a
+      <router-link class="navbar-brand nav-link m-0" to="/"
+        >Project manager</router-link
       >
       <button
         id="navbar-toggler"
@@ -19,10 +19,31 @@
       <div class="collapse navbar-collapse" id="navbarToggler">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item" v-if="$store.state.auth.isAuth">
-            <a class="nav-link" @click="logout"><logout-icon /> Log out</a>
+            <a
+              class="nav-link"
+              :class="{
+                active:
+                  $route.name === 'UserPanel' || $route.name === 'AdminPanel',
+              }"
+              @click="goToPanel"
+              ><dashboard-icon class="btn-icon" /> DashBoard</a
+            >
+          </li>
+          <li class="nav-item" v-if="$store.state.auth.isAuth">
+            <a class="nav-link" @click="logout"
+              ><logout-icon class="btn-icon" /> Log out</a
+            >
           </li>
           <li class="nav-item" v-else>
-            <router-link class="nav-link" to="/auth">Authorization</router-link>
+            <router-link
+              class="nav-link"
+              :class="{ active: $route.name === 'Auth' }"
+              to="/auth"
+            >
+              <person-workspace-icon
+                class="btn-icon"
+              />Authorization</router-link
+            >
           </li>
         </ul>
       </div>
@@ -31,8 +52,6 @@
 </template>
 
 <script>
-import LogoutIcon from "./icons/LogoutIcon.vue";
-
 export default {
   methods: {
     goToPanel() {
@@ -51,7 +70,6 @@ export default {
       this.$router.push("/auth");
     },
   },
-  components: { LogoutIcon },
 };
 </script>
 
