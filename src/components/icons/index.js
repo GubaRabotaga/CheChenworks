@@ -11,6 +11,7 @@ import DashboardIcon from "./DashboardIcon.vue";
 import PlusIcon from "./PlusIcon.vue";
 import PersonWorkspaceIcon from "./PersonWorkspaceIcon.vue";
 import SaveIcon from "./SaveIcon.vue";
+import MenuIcon from "./MenuIcon.vue";
 
 export default [
   CloseIcon,
@@ -26,4 +27,5 @@ export default [
   PlusIcon,
   PersonWorkspaceIcon,
   SaveIcon,
+  MenuIcon,
 ];

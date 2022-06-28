@@ -1,6 +1,6 @@
 <template>
   <navigation-bar />
-  <div class="mx-2 my-4">
+  <div class="mx-2 my-2 content">
     <router-view></router-view>
   </div>
   <div id="spinner-overlay">
@@ -26,13 +26,18 @@ body {
 
 #app {
   min-height: 100vh;
+  display: flex;
+}
+
+.content {
+  width: 100%;
 }
 
 .panel {
   background-color: $white;
   padding: 25px;
   border-radius: 50px;
-  min-height: 91vh;
+  min-height: 98vh;
 }
 
 #spinner-overlay {

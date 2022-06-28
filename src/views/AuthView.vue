@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container p-0">
     <div class="card mx-auto">
       <div class="card-header">
         <ul class="nav nav-pills nav-fill" id="pills-tab" role="tablist">
