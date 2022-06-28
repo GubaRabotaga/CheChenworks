@@ -57,7 +57,7 @@ export default {
 
 <style lang="scss" scoped>
 .card {
-  width: 80%;
+  width: 100%;
   opacity: 0.87;
   align-self: center;
 }
