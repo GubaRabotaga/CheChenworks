@@ -22,28 +22,7 @@ $light: #f1f4f9;
   padding-top: 2.3rem;
 }
 
-// @media only screen and (max-width: 600px) {
-//   .navbar {
-//     display: none;
-//   }
-// }
-
-// @media only screen and (max-width: 768px) {
-//   .nav-buttons > .nav-item > .nav-link {
-//     font-size: 0;
-//   }
-// }
-
 @media only screen and (max-width: 992px) {
-  // .nav-buttons > .nav-item > .nav-link {
-  //   font-size: 0;
-  //   justify-content: center !important;
-  // }
-
-  // .nav-link > .btn-icon {
-  //   margin: 0 !important;
-  // }
-
   .nav-buttons {
     align-self: flex-start;
   }
@@ -56,9 +35,6 @@ $light: #f1f4f9;
     align-content: flex-start;
   }
 }
-
-// @media only screen and (min-width: 1200px) {
-// }
 
 .navbar-brand {
   align-self: start;
