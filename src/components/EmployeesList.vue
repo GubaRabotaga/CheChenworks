@@ -101,7 +101,7 @@ export default {
 }
 
 .card-employee {
-  border-width: 2px;
+  border-width: 1px;
   margin-bottom: 2em;
   min-width: 15em;
   height: 100%;
