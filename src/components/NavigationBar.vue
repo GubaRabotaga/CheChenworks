@@ -39,20 +39,20 @@
 export default {
   data() {
     return {
-      expandCounter: 0,
+      isExpanded: true,
     };
   },
   methods: {
     expand() {
       const element = document.querySelector("#nav-buttons");
 
-      if (this.expandCounter % 2 === 0) {
+      if (this.isExpanded) {
         element.classList.remove("no-text");
       } else {
         element.classList.add("no-text");
       }
 
-      this.expandCounter++;
+      this.isExpanded = !this.isExpanded;
     },
     goToPanel() {
       let link = this.$store.state.auth.credentials.user?.roles?.at(0);
