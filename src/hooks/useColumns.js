@@ -26,21 +26,25 @@ export default function (employee) {
       name: "Waiting",
       id: 1,
       takenTasks: waitingTasks.value,
+      displayName: "To Do`s",
     },
     {
       name: "In progress",
       id: 2,
       takenTasks: inProgressTasks.value,
+      displayName: "In progress",
     },
     {
       name: "Stoped",
       id: 3,
       takenTasks: stopedTasks.value,
+      displayName: "Review",
     },
     {
       name: "Closed",
       id: 4,
       takenTasks: closedTasks.value,
+      displayName: "Done",
     },
   ]);
 

@@ -4,7 +4,7 @@
       <save-icon class="btn-icon" />Save
     </button>
     <div class="spinner-border d-flex mx-auto" role="status" v-if="isLoading" />
-    <column :columns="columns" v-else />
+    <column :columns="columns" @task-add="addTask" v-else />
   </div>
 </template>
 
@@ -34,6 +34,9 @@ export default {
     };
   },
   methods: {
+    async addTask(taskState) {
+      console.log(taskState);
+    },
     async save() {
       this.$store.dispatch("enableGlobalSpinner");
 

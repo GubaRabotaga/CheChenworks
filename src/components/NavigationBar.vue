@@ -78,12 +78,11 @@ a {
   cursor: pointer;
 }
 
-@media only screen and (max-width: 992px) {
+@media only screen and (max-width: 1200px) {
   .menu-btn {
     display: block !important;
   }
-}
-@media only screen and (max-width: 992px) {
+
   .nav-buttons.no-text > .nav-item > .nav-link {
     font-size: 0;
     justify-content: center !important;
