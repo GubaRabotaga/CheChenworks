@@ -1,6 +1,6 @@
 <template>
   <div class="spinner-border d-flex mx-auto" role="status" v-if="isLoading" />
-  <span class="container horizontal-scrollable p-0" v-else>
+  <span class="container horizontal-scrollable p-0 mt-4 ml0" v-else>
     <div class="row">
       <div class="col mb-3" v-for="column in columns" :key="column.id">
         <div class="card card-columns">
@@ -28,11 +28,9 @@
                 </strong>
                 <h5 class="task-title">
                   <span v-show="!element.Uphere">
-                    <div>{{ element.title }}</div>
-                    <div>
-                      <h6>{{ element.description }}</h6>
-                    </div>
-                    <files-row class="mt-3" :links="element.attachments" />
+                    <div class="fw-400">{{ element.title }}</div>
+                    <h6 class="fw-400">{{ element.description }}</h6>
+                    <files-row class="my-2" :links="element.attachments" />
 
                     <div class="progress">
                       <div
@@ -63,27 +61,6 @@
                     <h5>
                       <strong>Used: </strong>
                       {{ element.usedHours }}h
-                      <strong
-                        class="change1 unselectable"
-                        :style="{
-                          backgroundColor:
-                            $store.state.difficultyColors[element.difficulty],
-                        }"
-                        @mousedown="addHour(element)"
-                      >
-                        +
-                      </strong>
-
-                      <strong
-                        class="change2 unselectable"
-                        :style="{
-                          backgroundColor:
-                            $store.state.difficultyColors[element.difficulty],
-                        }"
-                        @mousedown="deleteHour(element)"
-                      >
-                        -
-                      </strong>
                     </h5>
                     <h5>
                       <strong>Difficulty:</strong> {{ element.difficulty }}
@@ -91,27 +68,6 @@
                     <h5>
                       <strong>Progress: </strong
                       >{{ Math.trunc(element.donePercents * 100) }}%
-                      <strong
-                        class="change1 unselectable"
-                        :style="{
-                          backgroundColor:
-                            $store.state.difficultyColors[element.difficulty],
-                        }"
-                        @mousedown="addPros(element)"
-                      >
-                        +
-                      </strong>
-
-                      <strong
-                        class="change2 unselectable"
-                        :style="{
-                          backgroundColor:
-                            $store.state.difficultyColors[element.difficulty],
-                        }"
-                        @mousedown="delPros(element)"
-                      >
-                        -
-                      </strong>
                     </h5>
 
                     <div class="progress">
@@ -194,6 +150,7 @@ export default {
 .horizontal-scrollable > .row {
   overflow-x: auto;
   flex-wrap: nowrap;
+  margin-left: 20px;
 }
 
 .add-task {

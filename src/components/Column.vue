@@ -1,6 +1,6 @@
 <template>
   <div class="col">
-    <span class="container horizontal-scrollable p-0">
+    <span class="container horizontal-scrollable p-0 mt-4">
       <div class="row">
         <div class="col mb-3" v-for="column in columns" :key="column.id">
           <div class="card card-columns">
@@ -11,7 +11,12 @@
                   {{ getTotalDifficulty(column.takenTasks) }}
                 </div>
               </div>
-              <div class="add-task" @click="addTask(column.name)">
+              <div
+                class="add-task"
+                @click="addTask(column.name)"
+                data-bs-toggle="modal"
+                data-bs-target="#createTaskModal"
+              >
                 <span> <strong>+ </strong> Add task</span>
               </div>
             </div>
@@ -40,11 +45,11 @@
                     </strong>
                     <h5 class="task-title">
                       <span v-show="!element.Uphere">
-                        <div class="handle">{{ element.title }}</div>
+                        <div class="handle fw-400">{{ element.title }}</div>
                         <div class="handle">
-                          <h6>{{ element.description }}</h6>
+                          <h6 class="fw-400">{{ element.description }}</h6>
                         </div>
-                        <files-row class="mt-3" :links="element.attachments" />
+                        <files-row class="my-2" :links="element.attachments" />
 
                         <div class="progress">
                           <div
@@ -162,6 +167,8 @@
 
 <script>
 import FilesRow from "./FilesRow.vue";
+import { AuthAPIInstance } from "@/api";
+
 export default {
   props: {
     columns: { type: Array, required: true },
@@ -176,39 +183,59 @@ export default {
     getHours(task) {
       let date1 = new Date(task.deadline);
       let date2 = new Date(task.startTime);
+
       let diff = date1.getTime() - date2.getTime();
+
       return parseInt(diff / (1000 * 60 * 60));
     },
     getDays(task) {
       let date1 = new Date(task.deadline);
       let date2 = new Date(task.startTime);
+
       let diff = date1.getTime() - date2.getTime();
       let dayz = parseInt(diff / (1000 * 60 * 60 * 24));
+
       return Math.round(dayz);
     },
     addHour(task) {
       task.usedHours += 1;
+      AuthAPIInstance.patch(`/tasks/${task._id}`, {
+        usedHours: task.usedHours,
+      });
     },
     deleteHour(task) {
       task.usedHours -= 1;
 
       if (task.usedHours < 0) {
         task.usedHours = 0;
+        return;
       }
+
+      AuthAPIInstance.patch(`/tasks/${task._id}`, {
+        usedHours: task.usedHours,
+      });
     },
     addPros(task) {
       task.donePercents += 0.01;
 
-      if (task.donePercents > 0.99) {
+      if (Math.floor(task.donePercents) === 1) {
         task.donePercents = 1;
       }
+
+      AuthAPIInstance.patch(`/tasks/${task._id}`, {
+        donePercents: task.donePercents,
+      });
     },
     delPros(task) {
       task.donePercents -= 0.01;
 
-      if (task.donePercents < 0.01) {
+      if (Math.ceil(task.donePercents) === 0) {
         task.donePercents = 0;
       }
+
+      AuthAPIInstance.patch(`/tasks/${task._id}`, {
+        donePercents: task.donePercents,
+      });
     },
   },
   components: { FilesRow },
@@ -229,6 +256,7 @@ export default {
 .horizontal-scrollable > .row {
   overflow-x: auto;
   flex-wrap: nowrap;
+  margin-left: 20px;
 }
 
 .handle {

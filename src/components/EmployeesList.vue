@@ -5,7 +5,7 @@
         <div class="col mb-3" v-for="employee in employees" :key="employee.id">
           <div class="card card-employee">
             <div class="card-header">
-              <h3 class="d-flex align-items-center">
+              <h4 class="d-flex align-items-center name">
                 {{ employee.name }} {{ employee.surname }}
                 <router-link
                   class="btn btn-outline-success"
@@ -14,8 +14,8 @@
                 >
                   <open-link-icon />
                 </router-link>
-              </h3>
-              <h6 style="margin-top: 5px; align: bottom; float: left">
+              </h4>
+              <h6 class="skills">
                 {{ employee.skills }}
               </h6>
             </div>
@@ -49,7 +49,7 @@
               </base-draggable>
             </div>
             <div class="badge">
-              Total difficulty:
+              <strong>Total difficulty:</strong>
               {{ getTotalDifficulty(employee.takenTasks) }}
             </div>
           </div>
@@ -89,8 +89,10 @@ export default {
 }
 
 .list-group-item {
-  border-radius: 2rem !important;
+  border-radius: 1rem !important;
   cursor: move;
+  border: none;
+  box-shadow: rgb(0 0 0 / 10%) 0px 4px 12px;
 }
 
 .list-group {
@@ -108,15 +110,29 @@ export default {
 }
 
 .badge {
-  border-radius: 2rem;
+  border-radius: 6px;
   margin-left: auto;
   margin-right: 16px;
   margin-bottom: 5px;
-  background-color: #99b2c6;
+  background-color: #dee2e6;
+  color: #809fb8;
   float: right;
+  font-weight: 400;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
 }
 
 .task-title {
   margin-right: 3px;
+  font-weight: 300;
+}
+
+.name {
+  font-weight: normal;
+}
+
+.skills {
+  margin-top: 5px;
+  float: left;
+  font-weight: lighter;
 }
 </style>

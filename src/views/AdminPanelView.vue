@@ -1,16 +1,53 @@
 <template>
   <div class="text-center panel">
-    <button class="btn btn-outline-secondary w-100 mb-5" @click="save">
+    <!-- <button
+      class="btn btn-outline-secondary mx-auto mb-5 save-btn"
+      @click="save"
+    >
       <save-icon class="btn-icon" /> Save
-    </button>
+    </button> -->
 
     <div class="mb-5 header">
-      <h3 class="my-auto">Employees</h3>
-      <button class="btn btn-outline-primary" @click="onInviteClicked">
+      <h3 class="my-auto fw-400">Employees</h3>
+      <button
+        class="btn btn-outline-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#inviteModal"
+        @click="onInviteClicked"
+      >
         <invite-icon v-if="!isInviteCodeCopied" class="btn-icon" />
         <check-icon v-else class="btn-icon" />
-        Copy invite
+        Invite
       </button>
+    </div>
+
+    <div class="modal" id="inviteModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Activate your account</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            Invitation code has been successfully copied to clipboard. Send it
+            to employee.
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="spinner-border" role="status" v-if="isEmployeesLoading" />
@@ -22,7 +59,7 @@
     />
 
     <div class="my-5 mb-5 header">
-      <h3 class="my-auto">Tasks</h3>
+      <h3 class="my-auto fw-400">Tasks</h3>
 
       <button
         class="btn btn-outline-primary"
@@ -118,9 +155,15 @@ export default {
       let event = new Event("copy");
       document.dispatchEvent(event);
     },
-    onTaskRelease(releasedTask) {
+    async onTaskRelease(releasedTask) {
       releasedTask.isFree = true;
       this.freeTasks.push(releasedTask);
+
+      this.$store.dispatch("enableGlobalSpinner");
+
+      await this.patchTask(releasedTask._id, { isFree: true });
+
+      this.$store.dispatch("disableGlobalSpinner");
     },
     onTaskUpdate(task) {
       this.taskToUpdate = task;
@@ -134,7 +177,7 @@ export default {
 
       this.freeTasks = this.freeTasks.filter((task) => task._id !== taskId);
 
-      this.save();
+      location.reload();
     },
     updateTask(task) {
       const old = this.freeTasks.find((t) => t._id === task._id);
@@ -162,6 +205,9 @@ export default {
     },
     onTaskCreated(newTask) {
       let formData = new FormData();
+
+      newTask.isFree = true;
+
       for (const key in newTask) {
         if (key === "files") continue;
         formData.append(key, newTask[key]);
@@ -206,6 +252,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.save-btn {
+  max-width: 500px;
+}
+
 .header {
   display: flex;
   justify-content: space-evenly;

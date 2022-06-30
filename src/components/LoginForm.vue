@@ -18,7 +18,9 @@
         required
       />
     </div>
-    <button type="submit" class="btn btn-primary log-in-btn">Log in</button>
+    <button type="submit" class="btn btn-outline-secondary log-in-btn">
+      Log in
+    </button>
   </form>
 </template>
 
@@ -68,5 +70,8 @@ export default {
 .log-in-btn {
   margin-top: 20px;
   width: 100%;
+  border-radius: 0.6rem;
+  border-color: transparent;
+  font-weight: 500;
 }
 </style>

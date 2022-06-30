@@ -1,4 +1,4 @@
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { AuthAPIInstance } from "@/api";
 
 export default function () {
@@ -9,6 +9,10 @@ export default function () {
     try {
       let response = await AuthAPIInstance.get("/employees");
       employees.value = response.data.employees;
+
+      employees.value.forEach((e) => {
+        e.takenTasks = ref(e.takenTasks);
+      });
 
       isLoading.value = false;
     } catch (error) {
@@ -24,7 +28,22 @@ export default function () {
     }
   };
 
-  onMounted(fetchEmployees);
+  onMounted(async () => {
+    await fetchEmployees();
+
+    employees.value.forEach((e) => {
+      watch(e.takenTasks, async (value) => {
+        const dto = value.map((task) => {
+          return {
+            _id: task._id,
+            isFree: false,
+          };
+        });
+
+        await putEmployee(e.id, { takenTasks: dto });
+      });
+    });
+  });
 
   return {
     employees,

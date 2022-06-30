@@ -146,13 +146,13 @@
       :disabled="v$.$invalid"
       tabindex="9"
       type="submit"
-      class="btn btn-primary sign-up-btn"
+      class="btn btn-outline-secondary sign-up-btn"
     >
       Sign up
     </button>
   </form>
 
-  <div class="modal fade" id="activateModal" tabindex="-1" aria-hidden="true">
+  <div class="modal" id="activateModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
@@ -300,5 +300,8 @@ export default {
 .sign-up-btn {
   margin-top: 20px;
   width: 100%;
+  border-radius: 0.6rem;
+  border-color: transparent;
+  font-weight: 500;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <navigation-bar />
-  <div class="mx-2 my-2 content">
+  <div class="content" id="content">
     <router-view></router-view>
   </div>
   <div id="spinner-overlay">
@@ -9,9 +9,31 @@
 </template>
 
 <script>
-import NavigationBar from "./components/NavigationBar.vue";
+import NavigationBar from "@/components/NavigationBar.vue";
+import { watch, onMounted } from "vue";
+import { useStore } from "vuex";
 
 export default {
+  setup() {
+    const store = useStore();
+
+    onMounted(() => {
+      const app = document.getElementById("app");
+      const updateAppStyle = (isAuth) => {
+        if (isAuth === true) {
+          app.style.display = "flex";
+        } else {
+          app.style.display = "block";
+        }
+      };
+
+      updateAppStyle(store.state.auth.isAuth);
+
+      watch(store.state.auth, (value) => {
+        updateAppStyle(value.isAuth);
+      });
+    });
+  },
   components: { NavigationBar },
 };
 </script>
@@ -26,11 +48,12 @@ body {
 
 #app {
   min-height: 100vh;
-  display: flex;
+  display: block;
 }
 
 .content {
   width: 100%;
+  display: flex;
 }
 
 .panel {
@@ -38,6 +61,8 @@ body {
   padding: 25px;
   border-radius: 50px;
   min-height: 98vh;
+  margin: 0.5rem;
+  width: 100%;
 }
 
 #spinner-overlay {

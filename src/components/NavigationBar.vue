@@ -1,13 +1,13 @@
 <template>
-  <nav class="bg-light navbar">
-    <router-link class="navbar-brand nav-link m-0" to="/"
+  <nav class="bg-light navbar side" v-if="$store.state.auth.isAuth">
+    <router-link class="navbar-brand nav-link" to="/"
       >Project manager</router-link
     >
     <button class="btn menu-btn p-0" @click="expand">
       <menu-icon />
     </button>
     <ul class="nav-buttons no-text" id="nav-buttons">
-      <li class="nav-item" v-if="$store.state.auth.isAuth">
+      <li class="nav-item">
         <a
           class="nav-link"
           :class="{
@@ -17,21 +17,47 @@
           ><dashboard-icon class="btn-icon" /> DashBoard</a
         >
       </li>
-      <li class="nav-item" v-if="$store.state.auth.isAuth">
+      <li class="nav-item">
         <a class="nav-link" @click="logout"
           ><logout-icon class="btn-icon" /> Log out</a
         >
       </li>
-      <li class="nav-item" v-else>
-        <router-link
-          class="nav-link"
-          :class="{ active: $route.name === 'Auth' }"
-          to="/auth"
-        >
-          <person-workspace-icon class="btn-icon" />Authorization</router-link
-        >
-      </li>
     </ul>
+  </nav>
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light" v-else>
+    <div class="container">
+      <router-link class="navbar-brand nav-link m-0" to="/"
+        >Project manager</router-link
+      >
+      <button
+        id="navbar-toggler"
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarToggler"
+        aria-controls="navbarToggler"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarToggler">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <router-link
+              class="nav-link"
+              :class="{ active: $route.name === 'Auth' }"
+              to="/auth"
+            >
+              <person-workspace-icon
+                class="btn-icon"
+              />Authorization</router-link
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
   </nav>
 </template>
 

@@ -14,25 +14,33 @@ $light: #f1f4f9;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 2rem;
+  border-radius: 0.9rem;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
 }
 
-.navbar {
-  align-items: flex-end;
+.form-control {
+  border-radius: 0.6rem;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+
+.navbar-light .navbar-nav .show > .nav-link,
+.navbar-light .navbar-nav .nav-link.active {
+  background-color: $primary;
+  color: $white;
+}
+
+.navbar:not(.side) {
+  box-shadow: rgb(0 0 0 / 10%) 0px 4px 12px;
+}
+
+.navbar.side {
+  align-content: flex-start;
   padding-top: 2.3rem;
 }
 
 @media only screen and (max-width: 1200px) {
-  .nav-buttons {
-    align-self: flex-start;
-  }
-
-  .navbar-brand {
+  .navbar.side > .navbar-brand {
     display: none !important;
-  }
-
-  .navbar {
-    align-content: flex-start;
   }
 }
 
@@ -40,6 +48,7 @@ $light: #f1f4f9;
   align-self: start;
   color: black;
   padding-top: 0 !important;
+  box-shadow: none !important;
 }
 
 .nav-link {
@@ -48,8 +57,18 @@ $light: #f1f4f9;
   font-weight: 600;
 }
 
-.nav-buttons > .nav-item {
+.nav-buttons > .nav-item,
+.navbar-nav > .nav-item {
   width: 100%;
+}
+
+.navbar-collapse.show > .navbar-nav,
+.navbar-collapse.collapsing > .navbar-nav {
+  margin-top: 15px;
+}
+
+.navbar-nav > .nav-item > .nav-link {
+  justify-content: center;
 }
 
 .nav-buttons {
@@ -58,6 +77,7 @@ $light: #f1f4f9;
   flex-direction: column;
   width: 100%;
   padding-left: 5px;
+  align-self: flex-start;
 }
 
 .btn-icon {
@@ -70,15 +90,22 @@ $light: #f1f4f9;
 
 .progress {
   height: 6px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
 }
 
 .nav-link {
   border-radius: 15px;
   padding: 0.8rem 1rem;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
 }
 
 .nav-pills .nav-link {
-  border-radius: 2rem;
+  border-radius: 0.6rem;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+
+.nav-pills > .nav-item {
+  margin-right: 10px;
 }
 
 .nav-buttons > .nav-item > .nav-link.active {
@@ -93,7 +120,9 @@ $light: #f1f4f9;
 
 .nav-pills .nav-link.active,
 .nav-pills .show > .nav-link {
-  background-color: $secondary;
+  background-color: #d9e1e7;
+  color: #809fb8;
+  margin-right: 5px;
 }
 
 .nav-pills .nav-link {
@@ -101,14 +130,15 @@ $light: #f1f4f9;
 }
 
 .card {
-  border-radius: 2rem;
+  border-radius: 1.07rem;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
 }
 
 .card-header {
-  background-color: $cyan-100;
+  background-color: #fff;
 }
 
 .card-header:first-child {
   border-color: transparent;
-  border-radius: 1.9rem 1.9rem 0 0 !important;
+  border-radius: 1rem 1rem 0 0 !important;
 }

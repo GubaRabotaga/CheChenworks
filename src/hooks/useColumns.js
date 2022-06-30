@@ -1,4 +1,5 @@
-import { computed, watch, ref } from "vue";
+import { computed, watch, ref, onMounted } from "vue";
+import { AuthAPIInstance } from "@/api";
 
 export default function (employee) {
   const waitingTasks = computed(() => {
@@ -48,10 +49,36 @@ export default function (employee) {
     },
   ]);
 
-  watch([waitingTasks, inProgressTasks, stopedTasks, closedTasks], (array) => {
-    for (let index = 0; index < array.length; index++) {
-      columns.value[index].takenTasks = array[index];
-    }
+  onMounted(() => {
+    watch(
+      [waitingTasks, inProgressTasks, stopedTasks, closedTasks],
+      (array) => {
+        for (let index = 0; index < array.length; index++) {
+          columns.value[index].takenTasks = array[index];
+        }
+      }
+    );
+
+    watch(
+      [
+        columns.value.at(0),
+        columns.value.at(1),
+        columns.value.at(2),
+        columns.value.at(3),
+      ],
+      (array) => {
+        for (let index = 0; index < array.length; index++) {
+          columns.value[index].takenTasks.forEach(async (task) => {
+            if (task.state !== columns.value[index].name.toLowerCase()) {
+              task.state = columns.value[index].name.toLowerCase();
+              await AuthAPIInstance.patch(`/tasks/${task._id}`, {
+                state: task.state,
+              });
+            }
+          });
+        }
+      }
+    );
   });
 
   return {
